@@ -1,0 +1,28 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic">
+<style>
+.container {
+  max-width: 400px;
+  margin: 40px auto;
+}
+body {
+  background-image: url('/static/karl-lee-ux0fOlB5b8M-unsplash.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <form method="POST" class="form-vertical" action="/login">
+    <h2>Sign In</h2>
+    {{ form.hidden_tag() }}
+    {{ form.username }}
+    {{ form.password }}
+    <button type="submit">Sign in</button>
+  </form>
+</div>
+</body>
+</html>
