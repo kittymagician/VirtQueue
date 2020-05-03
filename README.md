@@ -12,6 +12,8 @@ Making Physical Queueing Virtual
 
 # Screenshots
 
+![Admin Panel](https://github.com/kittymagician/VirtQueue/blob/master/images/2020-05-03%2003.04.42.gif)
+![Client View](https://github.com/kittymagician/VirtQueue/blob/master/images/2020-05-03%2003.30.37.gif)
 
 # Installation Guide
 (in progress)
