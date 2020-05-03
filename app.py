@@ -5,6 +5,7 @@ from flask_sqlalchemy  import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Email, Length, DataRequired
+from twilio.rest import Client
 import datetime
 import sqlite3
 import time
@@ -22,14 +23,25 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+sms_support = False # Change this to activate SMS support. 
+account_sid = '' #Twilio Account SID
+auth_token = '' #Twilio Auth Token
+twilio_number = '' #Twilio Number
+domain = 'domain.com' # Change this for SMS/Email messages to include your domain.
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(15), unique=True)
     password = db.Column(db.String(80))
  
-
-
+def sendsms(number, msg):
+  client = Client(account_sid, auth_token)
+  wmsg = " This text was sent automatically by the VirtQueue Service. To opt out of future texts text STOP to this number."
+  cmsg = msg + wmsg
+  client.messages.create(from_=twilio_number,
+                       to=number,
+                       body=msg)
+  
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -78,7 +90,6 @@ def login():
                 return redirect(url_for('admin'))
         print('error.')
         return '<h1>Invalid username or password</h1>'
-        #return '<h1>' + form.username.data + ' ' + form.password.data + '</h1>'
     return render_template('login.html', form=form)
 
 @app.route('/queue/<int:queue_id>')
@@ -127,7 +138,13 @@ def admin():
     timenow = datetime.datetime.now()
     c.execute("insert into queue values (?, ?, ?, ?, ?, ?, ?)", (None, number, category, status, ordr, timenow, None))
     conn.commit()
+    c.execute('SELECT id from queue WHERE number=(?)', (number))
+    queueid = c.fetchone()
+    print(queueid)
     conn.close()
+    if sms_support == True:
+      msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: ' + domain + '/queue' + queueid
+      def sendsms(number, msg):
     return redirect(url_for('neworders'))
   return render_template('admincenter.html', form=form, items=items)
 
@@ -250,41 +267,6 @@ def completedorder():
     conn.close()
     return redirect(url_for('neworders'))
   return render_template('completedorder.html', form=form, items=items)
-  
-  
-
-# @app.route('/admin/new', methods=['GET', 'POST'])
-# @login_required
-# def neworder():
-#   status = "new order"
-#   category = "food"
-#   form = MyForm()
-#   if form.validate_on_submit():  
-#     conn = sqlite3.connect('hubapp.sqlite')
-#     c = conn.cursor()
-#     number = form.telephonenumber.data
-#     ordr = form.ordr.data
-#     timenow = datetime.datetime.now()
-#     c.execute("insert into queue values (?, ?, ?, ?, ?, ?, ?)", (None, number, category, status, ordr, timenow, None))
-#     conn.commit()
-#     conn.close()
-#     return "<p>Added Order!</p>"
-#   return render_template('neworder.html', form=form)
-
-  #c.execute("insert into queue values (?, ?, ?, ?, ?)", (None, telephone, category, status, timenow))
-  #conn.commit()
-  #c.execute("SELECT MAX(ID) AS LastID FROM queue")
-  #lastid = c.fetchone()
-  #conn.close()
-  #return 'opened order: ' + str(lastid[0])
-  
-@app.route('/stream')
-def stream():
-    def eventStream():
-        while True:
-            # wait for source data to be available, then push it
-            yield 'data: {}\n\n'.format(get_message())
-    return Response(eventStream(), mimetype="text/event-stream")
 
 @app.route('/stream/<int:queue_id>')
 def streamid(queue_id):
@@ -295,4 +277,4 @@ def streamid(queue_id):
     return Response(eventStream(), mimetype="text/event-stream")
                   
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=3000, debug=True)
+    app.run(host='0.0.0.0', port=3000, debug=False)
