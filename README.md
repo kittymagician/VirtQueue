@@ -1,7 +1,6 @@
 # VirtQueue
 Making Physical Queueing Virtual
 
-
 # How Does VirtQueue work?
 
 1. You deploy it with a hosting provider of your choice.
@@ -21,16 +20,19 @@ VirtQueue from the customer perspective.
 VirtQueue from the admin/shop interface.
 
 # Installation Guide
-(in progress)
+
+See Installation Wiki [Installation Wiki](https://github.com/kittymagician/VirtQueue/wiki/Installation-Guide)
 
 # Licence
 
-VirtQueue is licenced via the MIT licence. See LICENCE for details.
+VirtQueue is licenced via the MIT licence. See ```LICENCE``` for details.
 
 # Future Plans
 
 API Support
 
+Phone Support
+
 SMS Support ✅ completed 3rd May 2020
 
-Phone Support
+
