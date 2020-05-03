@@ -11,7 +11,7 @@ Making Physical Queueing Virtual
 3. You control when people are ready to visit and help reduce foot fall while providing customer forfillment!
 
 # Screenshots
-(incoming!)
+
 
 # Installation Guide
 (in progress)
