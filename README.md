@@ -37,6 +37,14 @@ flask-talisman intergration
 
 SMS Support ✅ completed 3rd May 2020
 
+# Contributing
+
+1. Fork it https://github.com/kittymagician/VirtQueue/fork
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request
+
 # With Thanks
 Thanks to Matt Holt for developing [Caddy](https://caddyserver.com) and providing help with getting Server Side Events working.
 
