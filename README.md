@@ -33,6 +33,8 @@ API Support
 
 Phone Support
 
+flask-talisman intergration
+
 SMS Support ✅ completed 3rd May 2020
 
 
