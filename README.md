@@ -31,6 +31,6 @@ VirtQueue is licenced via the MIT licence. See LICENCE for details.
 
 API Support
 
-SMS Support
+SMS Support ✅ completed 3rd May 2020
 
 Phone Support
