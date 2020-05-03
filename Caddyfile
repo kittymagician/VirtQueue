@@ -1,0 +1,12 @@
+queue.yourdomain.com {
+    root * /var/www/VirtQueue
+    tls youremail@domain.com
+    reverse_proxy localhost:5000 {
+        flush_interval -1
+    }
+    header {
+        X-Content-Type-Options nosnif
+        X-Frame-Options DENY
+        Referrer-Policy no-referrer-when-downgrade
+   }
+}
