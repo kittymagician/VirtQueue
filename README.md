@@ -12,8 +12,13 @@ Making Physical Queueing Virtual
 
 # Screenshots
 
+<img src='https://github.com/kittymagician/VirtQueue/blob/master/images/2020-05-03%2003.30.37.gif' width="200" height="490">
+
+VirtQueue from the customer perspective.
+
 ![Admin Panel](https://github.com/kittymagician/VirtQueue/blob/master/images/2020-05-03%2003.04.42.gif)
-![Client View](https://github.com/kittymagician/VirtQueue/blob/master/images/2020-05-03%2003.30.37.gif)
+
+VirtQueue from the admin/shop interface.
 
 # Installation Guide
 (in progress)
@@ -25,5 +30,7 @@ VirtQueue is licenced via the MIT licence. See LICENCE for details.
 # Future Plans
 
 API Support
+
 SMS Support
+
 Phone Support
