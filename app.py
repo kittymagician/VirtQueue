@@ -3,7 +3,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy  import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField
 from wtforms.validators import InputRequired, Email, Length, DataRequired
 from twilio.rest import Client
 import datetime
@@ -24,9 +24,9 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 sms_support = False # Change this to activate SMS support. 
-account_sid = '' #Twilio Account SID
-auth_token = '' #Twilio Auth Token
-twilio_number = '' #Twilio Number
+account_sid = 'twilio account sid here' #Twilio Account SID
+auth_token = 'twilio auth token here' #Twilio Auth Token
+twilio_number = 'twilio number here' #Twilio Number
 domain = 'domain.com' # Change this for SMS/Email messages to include your domain.
 
 class User(UserMixin, db.Model):
@@ -40,14 +40,14 @@ def sendsms(number, msg):
   cmsg = msg + wmsg
   client.messages.create(from_=twilio_number,
                        to=number,
-                       body=msg)
+                       body=cmsg)
   
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
 class MyForm(FlaskForm):
-    telephonenumber = StringField('telephone number', validators=[DataRequired(), Length(max=40)])
+    telephonenumber = StringField('telephone number', validators=[DataRequired(), Length(max=11)])
     ordr = StringField('order', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
@@ -55,18 +55,11 @@ class LoginForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
 
-def get_message():
-    '''this could be any function that blocks until data is ready'''
-    time.sleep(1.0)
-    s = time.ctime(time.time())
-    return s
-
-
 def get_m(queueid):
     '''this could be any function that blocks until data is ready'''
     conn = sqlite3.connect('hubapp.sqlite')
     c = conn.cursor()
-    c.execute("SELECT ID, telephone number, category, status, jointime FROM queue WHERE id =?", (queueid,))
+    c.execute("SELECT ID, telephonenumber, category, status, jointime FROM queue WHERE id =?", (queueid,))
     assigned = c.fetchone()
     a = "Your Order is currently: "
     b = assigned[3]
@@ -117,6 +110,16 @@ def readyorder(queue_id):
   id = str(queue_id)
   c.execute("UPDATE queue SET status = ? WHERE ID = ?", ('your order is ready to collect', id))
   conn.commit()
+  if sms_support == True:
+    msg = 'Your order is ready for collection at the shop. Track progress online: https://' + domain + '/queue/' + id
+    c.execute("SELECT telephonenumber FROM queue where ID = ?", (id,))
+    numtogether = c.fetchall()
+    if len(numtogether) > 0:
+      numselect = len(numtogether) - 1 #list starts at 0.
+      number = numtogether[numselect]
+    else:
+      number = numtogether[0]
+    sendsms(number, msg)
   conn.close()
   return redirect(url_for('readyingorder'))
 
@@ -138,13 +141,18 @@ def admin():
     timenow = datetime.datetime.now()
     c.execute("insert into queue values (?, ?, ?, ?, ?, ?, ?)", (None, number, category, status, ordr, timenow, None))
     conn.commit()
-    c.execute('SELECT id from queue WHERE number=(?)', (number))
-    queueid = c.fetchone()
-    print(queueid)
+    c.execute("SELECT ID from queue WHERE telephonenumber=?", (number,))
+    queueidget = c.fetchall()
+    queueselect = len(queueidget) - 1 #list starts at 0.
+    if queueselect > 0:
+    	 queueid = queueidget[queueselect]
+    else:
+     queueid = str(queueidget[0])
     conn.close()
     if sms_support == True:
-      msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: ' + domain + '/queue' + queueid
-      def sendsms(number, msg):
+      print(queueid)
+      msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: https://' + domain + '/queue/' + str(queueid[0])
+      sendsms(number, msg)
     return redirect(url_for('neworders'))
   return render_template('admincenter.html', form=form, items=items)
 
@@ -157,7 +165,7 @@ def neworders():
   items = c.fetchall()
   status = "new order"
   category = "food"
-  form = MyForm()
+  form = MyForm()  
   if form.validate_on_submit():  
     conn = sqlite3.connect('hubapp.sqlite')
     c = conn.cursor()
@@ -166,7 +174,18 @@ def neworders():
     timenow = datetime.datetime.now()
     c.execute("insert into queue values (?, ?, ?, ?, ?, ?, ?)", (None, number, category, status, ordr, timenow, None))
     conn.commit()
+    c.execute("SELECT ID from queue WHERE telephonenumber=?", (number,))
+    queueidget = c.fetchall()
+    queueselect = len(queueidget) - 1 #list starts at 0.
+    if queueselect > 0:
+    	 queueid = queueidget[queueselect]
+    else:
+     queueid = str(queueidget[0])
     conn.close()
+    if sms_support == True:
+      print(queueid)
+      msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: https://' + domain + '/queue/' + str(queueid[0])
+      sendsms(number, msg)
     return redirect(url_for('neworders'))
   return render_template('openorder.html', form=form, items=items)
 
@@ -211,7 +230,7 @@ def prepairingorder():
   items = c.fetchall()
   status = "new order"
   category = "food"
-  form = MyForm()
+  form = MyForm()  
   if form.validate_on_submit():  
     conn = sqlite3.connect('hubapp.sqlite')
     c = conn.cursor()
@@ -220,7 +239,18 @@ def prepairingorder():
     timenow = datetime.datetime.now()
     c.execute("insert into queue values (?, ?, ?, ?, ?, ?, ?)", (None, number, category, status, ordr, timenow, None))
     conn.commit()
+    c.execute("SELECT ID from queue WHERE telephonenumber=?", (number,))
+    queueidget = c.fetchall()
+    queueselect = len(queueidget) - 1 #list starts at 0.
+    if queueselect > 0:
+    	 queueid = queueidget[queueselect]
+    else:
+     queueid = str(queueidget[0])
     conn.close()
+    if sms_support == True:
+      print(queueid)
+      msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: https://' + domain + '/queue/' + str(queueid[0])
+      sendsms(number, msg)
     return redirect(url_for('neworders'))
   return render_template('prepairorder.html', form=form, items=items)
 
@@ -233,7 +263,7 @@ def readyingorder():
   items = c.fetchall()
   status = "new order"
   category = "food"
-  form = MyForm()
+  form = MyForm() 
   if form.validate_on_submit():  
     conn = sqlite3.connect('hubapp.sqlite')
     c = conn.cursor()
@@ -242,7 +272,18 @@ def readyingorder():
     timenow = datetime.datetime.now()
     c.execute("insert into queue values (?, ?, ?, ?, ?, ?, ?)", (None, number, category, status, ordr, timenow, None))
     conn.commit()
+    c.execute("SELECT ID from queue WHERE telephonenumber=?", (number,))
+    queueidget = c.fetchall()
+    queueselect = len(queueidget) - 1 #list starts at 0.
+    if queueselect > 0:
+    	 queueid = queueidget[queueselect]
+    else:
+     queueid = str(queueidget[0])
     conn.close()
+    if sms_support == True:
+      print(queueid)
+      msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: https://' + domain + '/queue/' + str(queueid[0])
+      sendsms(number, msg)
     return redirect(url_for('neworders'))
   return render_template('readyorder.html', form=form, items=items)
 
@@ -264,7 +305,18 @@ def completedorder():
     timenow = datetime.datetime.now()
     c.execute("insert into queue values (?, ?, ?, ?, ?, ?, ?)", (None, number, category, status, ordr, timenow, None))
     conn.commit()
+    c.execute("SELECT ID from queue WHERE telephonenumber=?", (number,))
+    queueidget = c.fetchall()
+    queueselect = len(queueidget) - 1 #list starts at 0.
+    if queueselect > 0:
+    	 queueid = queueidget[queueselect]
+    else:
+     queueid = str(queueidget[0])
     conn.close()
+    if sms_support == True:
+      print(queueid)
+      msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: https://' + domain + '/queue/' + str(queueid[0])
+      sendsms(number, msg)
     return redirect(url_for('neworders'))
   return render_template('completedorder.html', form=form, items=items)
 
