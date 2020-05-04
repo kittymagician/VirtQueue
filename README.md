@@ -33,7 +33,7 @@ VirtQueue is licenced via the MIT licence. See ```LICENCE``` for details.
 
 API Support
 
-Phone Support
+Phone Support ✅ completed 4th May 2020
 
 flask-talisman intergration
 
