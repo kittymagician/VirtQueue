@@ -23,7 +23,8 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-sms_support = False # Change this to activate SMS support. 
+sms_support = False # Change this to activate SMS support.
+telephone_support = False # Change this to activate Phone support.
 account_sid = 'twilio account sid here' #Twilio Account SID
 auth_token = 'twilio auth token here' #Twilio Auth Token
 twilio_number = 'twilio number here' #Twilio Number
@@ -41,6 +42,16 @@ def sendsms(number, msg):
   client.messages.create(from_=twilio_number,
                        to=number,
                        body=cmsg)
+  
+def sendcall(number, msg):
+  client = Client(account_sid, auth_token)
+  wmsg = " This call was made automatically by the VirtQueue Service used by your local shop."
+  cmsg = msg + wmsg
+  call = client.calls.create(
+                        url='https://'+ domain + '/answer/' + cmsg,
+                        to=number,
+                        from_=twilio_number
+                    )
   
 @login_manager.user_loader
 def load_user(user_id):
@@ -120,6 +131,16 @@ def readyorder(queue_id):
     else:
       number = numtogether[0]
     sendsms(number, msg)
+  if telephone_support == True:
+    msg = 'Your order is ready for collection at the shop. Track progress online: https://' + domain + '/queue/' + id
+    c.execute("SELECT telephonenumber FROM queue where ID = ?", (id,))
+    numtogether = c.fetchall()
+    if len(numtogether) > 0:
+      numselect = len(numtogether) - 1 #list starts at 0.
+      number = numtogether[numselect]
+    else:
+      number = numtogether[0]
+    sendcall(number, msg)
   conn.close()
   return redirect(url_for('readyingorder'))
 
@@ -150,9 +171,11 @@ def admin():
      queueid = str(queueidget[0])
     conn.close()
     if sms_support == True:
-      print(queueid)
       msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: https://' + domain + '/queue/' + str(queueid[0])
       sendsms(number, msg)
+    if telephone_support == True:
+      msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: https://' + domain + '/queue/' + str(queueid[0])
+      sendcall(number, msg)
     return redirect(url_for('neworders'))
   return render_template('admincenter.html', form=form, items=items)
 
@@ -186,6 +209,9 @@ def neworders():
       print(queueid)
       msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: https://' + domain + '/queue/' + str(queueid[0])
       sendsms(number, msg)
+    if telephone_support == True:
+      msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: https://' + domain + '/queue/' + str(queueid[0])
+      sendcall(number, msg)
     return redirect(url_for('neworders'))
   return render_template('openorder.html', form=form, items=items)
 
@@ -251,6 +277,9 @@ def prepairingorder():
       print(queueid)
       msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: https://' + domain + '/queue/' + str(queueid[0])
       sendsms(number, msg)
+    if telephone_support == True:
+      msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: https://' + domain + '/queue/' + str(queueid[0])
+      sendcall(number, msg)
     return redirect(url_for('neworders'))
   return render_template('prepairorder.html', form=form, items=items)
 
@@ -284,6 +313,9 @@ def readyingorder():
       print(queueid)
       msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: https://' + domain + '/queue/' + str(queueid[0])
       sendsms(number, msg)
+    if telephone_support == True:
+      msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: https://' + domain + '/queue/' + str(queueid[0])
+      sendcall(number, msg)
     return redirect(url_for('neworders'))
   return render_template('readyorder.html', form=form, items=items)
 
@@ -317,8 +349,20 @@ def completedorder():
       print(queueid)
       msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: https://' + domain + '/queue/' + str(queueid[0])
       sendsms(number, msg)
+    if telephone_support == True:
+      msg = 'Your order:' + ordr + ' has been confirmed by the shop. Track progress online: https://' + domain + '/queue/' + str(queueid[0])
+      sendcall(number, msg)
     return redirect(url_for('neworders'))
   return render_template('completedorder.html', form=form, items=items)
+
+@app.route("/answer/<string:msg>", methods=['GET', 'POST'])
+def answer_call(msg):
+    """Respond to incoming phone calls with a brief message."""
+    # Start our TwiML response
+    resp = VoiceResponse()
+    # Read a message aloud to the caller
+    resp.say(msg, voice='alice')
+    return str(resp)
 
 @app.route('/stream/<int:queue_id>')
 def streamid(queue_id):
