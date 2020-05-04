@@ -49,6 +49,7 @@ SMS Support ✅ completed 3rd May 2020
 VirtQueue has been tested and is compatible with the following distributions.
 
 CentOS 8 - Python 3.6.8
+
 Ubuntu 18.04LTS - Python 3.6.9
 
 
