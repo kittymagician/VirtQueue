@@ -45,11 +45,16 @@ SMS Support ✅ completed 3rd May 2020
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
+# Compatability
+VirtQueue has been tested and is compatible with the following distributions.
+
+CentOS 8 - Python 3.6.8
+Ubuntu 18.04LTS - Python 3.6.9
+
+
 # With Thanks
 Thanks to Matt Holt for developing [Caddy](https://caddyserver.com) and providing help with getting Server Side Events working.
 
 Karl Lee for providing the amazing mountains photo used on the login screen that is [royalty free](https://unsplash.com/photos/ux0fOlB5b8M)
 
 Francisco Presencia for [Picnic CSS](https://picnicss.com)
-
-
