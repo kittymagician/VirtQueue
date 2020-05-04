@@ -1,5 +1,7 @@
-# VirtQueue
+# VirtQueue 
 Making Physical Queueing Virtual
+
+ [![GitHub license](https://img.shields.io/github/license/kittymagician/VirtQueue)](https://github.com/kittymagician/VirtQueue/blob/master/LICENSE)
 
 # How Does VirtQueue work?
 
