@@ -7,7 +7,7 @@ Making Physical Queueing Virtual
 
 1. You deploy it with a hosting provider of your choice.
 
-2. Add the customer to your VirtQueue. They are notified by SMS/Web of the progress of the order.
+2. Add customers to your VirtQueue. They are notified by SMS/Web of the progress of orders.
 
 3. You control when people are ready to visit and help reduce foot fall while providing customer forfillment!
 
@@ -35,7 +35,11 @@ API Support
 
 Phone Support ✅ completed 4th May 2020
 
+<<<<<<< HEAD
 flask-talisman intergration
+=======
+[flask-talisman](https://github.com/GoogleCloudPlatform/flask-talisman) intergration ✅ completed 9th May 2020
+>>>>>>> 36fd55bdeb902f09386ee65c65e4f17a80037d40
 
 SMS Support ✅ completed 3rd May 2020
 
