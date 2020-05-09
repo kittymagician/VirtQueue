@@ -1,0 +1,10 @@
+.container {
+  max-width: 400px;
+  margin: 40px auto;
+}
+body {
+  background-image: url('/static/karl-lee-ux0fOlB5b8M-unsplash.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}

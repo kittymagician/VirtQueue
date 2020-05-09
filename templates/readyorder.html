@@ -2,79 +2,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-<style>
-  .myCoolButton {
-    background: #8000ff;
-   }
-  .container {
-    max-width: 400px;
-    margin: 40px auto;
-  }
-
-  h3.entry {
-    max-width: 400px;
-    margin: 600px 600px;
-  }
-
-  nav {
-    background: black;
-  }
-
-  a.brand {
-    color: white;
-  }
-
-  /* The Modal (background) */
-
-  .modal {
-    display: none;
-    /* Hidden by default */
-    position: fixed;
-    /* Stay in place */
-    z-index: 1;
-    /* Sit on top */
-    padding-top: 100px;
-    /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%;
-    /* Full width */
-    height: 100%;
-    /* Full height */
-    overflow: auto;
-    /* Enable scroll if needed */
-    background-color: rgb(0, 0, 0);
-    /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.4);
-    /* Black w/ opacity */
-  }
-
-  /* Modal Content */
-
-  .modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-  }
-
-  /* The Close Button */
-
-  .close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-  }
-
-  .close:hover,
-  .close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-  }
-</style>
+<link rel="stylesheet" href="../static/admin.css">
 <nav>
   <a href="/admin" class="brand">
     <span>VirtQueue</span>
@@ -139,48 +67,8 @@
       </div>
     </div>
   </div>
-  <script>
-    // Get the modal
-    var modal = document.getElementById("myModal");
-
-    // Get the button that opens the modal
-    var btn = document.getElementById("myBtn");
-
-    //GetSubmissionButton
-    var eDat = document.getElementById("eDat");
-
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-
-    // When the user clicks on the button, open the modal
-    btn.onclick = function() {
-      modal.style.display = "block";
-    }
-
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
-      modal.style.display = "none";
-    }
-
-    eDat.onclick = function() {
-      modal.style.display = "block";
-    }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
-  </script>
+  <script src="../static/adminmodal.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/js/jquery.dataTables.js" integrity="sha256-Q0cguHZIfvl0zzk68PF1dGCY3pW2y6xvHx4GHLQ/lg4=" crossorigin="anonymous"></script>
-  <script>
-    $(document).ready(function() {
-      $('#queue').DataTable( {
-           "order": [[ 3, "desc" ]]
-      });
-      $('.dataTables_length').addClass('bs-select');
-    });
-  </script>
+  <script src="../static/admintables.js"></script>
 </html>

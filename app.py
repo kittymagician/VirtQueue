@@ -6,6 +6,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField
 from wtforms.validators import InputRequired, Email, Length, DataRequired
 from twilio.rest import Client
+from flask_talisman import Talisman
 import datetime
 import sqlite3
 import time
@@ -19,6 +20,25 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['SESSION_COOKIE_NAME'] = "__secure"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+csp = {
+  'default-src': '\'self\' openstreetmap.fr *.openstreetmap.fr',
+  'style-src':  '\'unsafe-inline\' \'self\' datatables.net *.datatables.net bootstrapcdn.com *.bootstrapcdn.com cloudflare.com *.cloudflare.com jsdelivr.net *.jsdelivr.net',
+  'script-src': '\'unsafe-eval\' \'self\' bootstrapcdn.com datatables.net *.datatables.net cloudflare.com *.cloudflare.com  jquery.com *.jquery.com jsdelivr.net *.jsdelivr.net',
+  'font-src': 'cloudflare.com *.cloudflare.com jsdelivr.net *.jsdelivr.net',
+  'img-src': '\'self\' data: *.datatables.net datatables.net'
+}
+feature_policy = {
+  'geolocation': '\'none\'',
+  'accelerometer': '\'none\'',
+  'camera': '\'none\'',
+  'geolocation': '\'none\'',
+  'gyroscope': '\'none\'',
+  'magnetometer': '\'none\'',
+  'microphone': '\'none\'',
+  'payment': '\'none\'',
+   'usb': '\'none\''
+}
+Talisman(app, content_security_policy=csp, feature_policy=feature_policy, content_security_policy_nonce_in=['script-src'])
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -29,6 +49,7 @@ account_sid = 'twilio account sid here' #Twilio Account SID
 auth_token = 'twilio auth token here' #Twilio Auth Token
 twilio_number = 'twilio number here' #Twilio Number
 domain = 'domain.com' # Change this for SMS/Email messages to include your domain.
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
