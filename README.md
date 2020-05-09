@@ -35,7 +35,7 @@ API Support
 
 Phone Support ✅ completed 4th May 2020
 
-flask-talisman intergration ✅ completed 9th May 2020
+flask-talisman intergration
 
 SMS Support ✅ completed 3rd May 2020
 
