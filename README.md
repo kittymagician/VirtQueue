@@ -5,7 +5,7 @@ Making Physical Queueing Virtual
 
 # How Does VirtQueue work?
 
-1. You deploy it with a hosting provider of your choice.
+1. You deploy it with a hosting provider of your choice. (Linode or DigitalOcean budget tiers are fine.)
 
 2. Add customers to your VirtQueue. They are notified by SMS/Web of the progress of orders.
 
