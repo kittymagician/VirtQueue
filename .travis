@@ -1,0 +1,14 @@
+dist: xenial
+language: python
+
+python:
+  - "3.6"
+  - "3.7"
+
+install:
+  - pip3 install -r requirements.txt
+  - python3 testbuild.py
+
+script:
+  - python3 app.py
+  - gunicorn --bind 0.0.0.0:5000 --workers=5 --threads=2 wsgi:app --preload --daemon
