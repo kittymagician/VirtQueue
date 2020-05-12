@@ -5,12 +5,9 @@ Flask-WTF==0.14.3
 gunicorn==20.0.4
 itsdangerous==1.1.0
 Jinja2==2.10.1
-jsonpatch==1.21
-jsonpointer==1.10
 jsonschema==2.6.0
 MarkupSafe==0.23
 python-dateutil==2.6.1
-python-dmidecode==3.12.2
 pytz==2017.2
 PyYAML==5.1
 requests==2.20.0
