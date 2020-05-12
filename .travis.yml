@@ -11,4 +11,3 @@ install:
 
 script:
   - python3 app.py
-  - gunicorn --bind 0.0.0.0:5000 --workers=5 --threads=2 wsgi:app --preload --daemon
